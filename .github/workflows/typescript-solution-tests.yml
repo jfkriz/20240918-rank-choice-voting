@@ -29,7 +29,7 @@ jobs:
         uses: im-open/process-jest-test-results@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          results-file: 'Solutions/Typescript/jest-results.json'
+          results-file: 'Solutions/TypeScript/jest-results.json'
           report-name: 'Unit Test Results'
           create-status-check: true
           ignore-test-failures: true
