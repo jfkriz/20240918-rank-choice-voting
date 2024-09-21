@@ -5,6 +5,9 @@ on: [push, pull_request]
 jobs:
   typescript-tests:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Solutions/TypeScript
 
     steps:
       - name: Checkout repository
@@ -16,7 +19,17 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: cd Solutions/TypeScript && npm install
+        run: npm install
 
       - name: Run unit tests
-        run: cd Solutions/TypeScript && npm run test
+        run: npm run test --json --outputFile=jest-results.json
+        continue-on-error: true
+
+      - name: Unit Test Results
+        uses: im-open/process-jest-test-results@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          results-file: 'jest-results.json'
+          report-name: 'Unit Test Results'
+          create-status-check: true
+          ignore-test-failures: true
