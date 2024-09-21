@@ -26,15 +26,11 @@ export class BallotBox {
      * @returns the rankings of the candidates, as a map from candidate name to the proportion of votes they received
      */
     private getRankings(candidates: Array<string>, ballots: Array<Ballot>): Map<string, number> {
-        const rankings = new Map<string, number>();
-        candidates.forEach((candidate) => {
-            rankings.set(candidate, 0);
-        });
-
-        ballots.forEach((ballot) => {
+        // Get the rankings of the remaining candidates from the ballots
+        const rankings = ballots.filter(ballot => ballot.hasCandidate(candidates)).reduce((acc, ballot) => {
             const highestRankedCandidate = ballot.getHighestRankedVote();
-            rankings.set(highestRankedCandidate, rankings.get(highestRankedCandidate)! + 1);
-        });
+            return acc.set(highestRankedCandidate, (acc.get(highestRankedCandidate) || 0) + 1);
+        }, new Map<string, number>());
 
         const ballotCount = ballots.length;
         return new Map([...rankings].map(([candidate, votes]) => [candidate, votes / ballotCount]));
@@ -48,7 +44,7 @@ export class BallotBox {
      */
     public instantRunoffWinner(): string {
         const remainingCandidates = [...this.candidates];
-        const ballots = [...this.ballots.map((ballot) => ballot.clone())];
+        const ballots = this.ballots.map((ballot) => ballot.clone());
         while(remainingCandidates.length > 1) {
             const rankings = this.getRankings(remainingCandidates, ballots);
             const winner = [...rankings.entries()].find((entry) => entry[1] > 0.5);

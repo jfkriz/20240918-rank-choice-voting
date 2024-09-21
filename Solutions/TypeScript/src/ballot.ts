@@ -22,7 +22,7 @@ export class Ballot {
         names.forEach((name, index) => {
             const rank = ranks[index];
             if(!Number.isNaN(rank) && rank > 0) {
-                this.votes.set(name, ranks[index]);
+                this.votes.set(name, rank);
             }
         });
     }
@@ -34,6 +34,13 @@ export class Ballot {
     public getHighestRankedVote(): string {
         const highestRank = Math.min(...Array.from(this.votes.values()));
         return [...this.votes.entries()].find(entry => entry[1] === highestRank)?.[0] as string;
+    }
+
+    public hasCandidate(name: string | string[]): boolean {
+        if(Array.isArray(name)) {
+            return name.some(candidate => this.votes.has(candidate));
+        }
+        return this.votes.has(name);
     }
 
     /**
