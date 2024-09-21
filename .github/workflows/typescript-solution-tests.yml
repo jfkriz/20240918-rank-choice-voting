@@ -1,0 +1,22 @@
+name: Run TypeScript Solution Unit Tests
+
+on: [push, pull_request]
+
+jobs:
+  typescript-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: cd Solutions/TypeScript && npm install
+
+      - name: Run unit tests
+        run: cd Solutions/TypeScript && npm run test

@@ -10,7 +10,12 @@ describe("BallotBox", () => {
     const testCasesDir = `${__dirname}/../../../test-elections`;
     const testCases = [
         createTestCase("test-01-basic-majority"),
-        createTestCase("test-02-no-initial-majority-candidate")
+        createTestCase("test-02-no-initial-majority-candidate"),
+        createTestCase("test-03-multiple-rounds-of-elimination"),
+        createTestCase("test-04-exhausted-ballot"),
+        createTestCase("test-05-no-majority--all-candidates-eliminated-except-one"),
+        createTestCase("test-06-duplicate-rankings"),
+        createTestCase("test-07-skipped-rankings"),
     ];
 
     function createTestCase(testCase: string): TestCase {
@@ -23,9 +28,9 @@ describe("BallotBox", () => {
         return { name: testCase, expectedWinner, fixture };
     }
 
-    test.each(testCases)("should return $expectedWinner as the winner for $name", (testCase) => {
-        const winner = testCase.fixture.getWinningCandidate();
-        expect(winner).toBe(testCase.expectedWinner);
+    test.each(testCases)("instantRunoffWinner should return $expectedWinner as the winner for $name", (testCase) => {
+        const winner = testCase.fixture.instantRunoffWinner();
+        expect(winner).toEqual(testCase.expectedWinner);
     });
 });
 
